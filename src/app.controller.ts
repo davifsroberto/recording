@@ -101,7 +101,7 @@ export class AppController {
     });
   }
 
- @Get('stream/:videoId')
+  @Get('stream/:videoId')
   @Header('Content-Type', 'video/mp4')
   async streamVideo(
     @Param('videoId') videoId: string,
@@ -115,7 +115,7 @@ export class AppController {
     });
 
     if (!video) throw new NotFoundException('Video not found');
-    
+
     const videoPath = path.join('.', video.url);
     const fileSize = fs.statSync(videoPath).size;
 

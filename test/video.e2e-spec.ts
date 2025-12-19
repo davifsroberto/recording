@@ -90,7 +90,7 @@ describe('VideoController (e2e)', () => {
           });
         });
     });
-    
+
     it('does not allow non mp4 files', async () => {
       const video = {
         title: 'Test Video',
