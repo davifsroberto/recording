@@ -1,0 +1,10 @@
+node_modules
+.vscode
+.dist
+.husky
+*.yml
+coverage
+documentation
+dist
+helm
+Dockerfile
