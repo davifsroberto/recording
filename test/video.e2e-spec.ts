@@ -53,7 +53,6 @@ describe('VideoController (e2e)', () => {
         .attach('thumbnail', './test/fixtures/sample.jpg')
         .field('title', video.title)
         .field('description', video.description)
-      
         .expect(HttpStatus.CREATED)
         .expect((response) => {
           expect(response.body).toMatchObject({
@@ -82,7 +81,6 @@ describe('VideoController (e2e)', () => {
         .attach('video', './test/fixtures/sample.mp4')
         .field('title', video.title)
         .field('description', video.description)
-       
         .expect(HttpStatus.BAD_REQUEST)
         .expect((response) => {
           expect(response.body).toMatchObject({
@@ -92,6 +90,7 @@ describe('VideoController (e2e)', () => {
           });
         });
     });
+    
     it('does not allow non mp4 files', async () => {
       const video = {
         title: 'Test Video',
@@ -108,7 +107,6 @@ describe('VideoController (e2e)', () => {
         .attach('thumbnail', './test/fixtures/sample.jpg')
         .field('title', video.title)
         .field('description', video.description)
-        
         .expect(HttpStatus.BAD_REQUEST)
         .expect({
           message:
@@ -116,6 +114,39 @@ describe('VideoController (e2e)', () => {
           error: 'Bad Request',
           statusCode: 400,
         });
+    });
+  });
+
+  describe('/stream/:videoId', () => {
+    it('streams a video', async () => {
+      const { body: sampleVideo } = await request(app.getHttpServer())
+        .post('/video')
+        .attach('video', './test/fixtures/sample.mp4')
+        .attach('thumbnail', './test/fixtures/sample.jpg')
+        .field('title', 'Test Video')
+        .field('description', 'This is a test video')
+        .expect(HttpStatus.CREATED);
+
+      const fileSize = 1430145;
+      const range = `bytes=0-${fileSize - 1}`;
+
+      const response = await request(app.getHttpServer())
+        .get(`/stream/${sampleVideo.id}`)
+        .set('Range', range)
+        .expect(HttpStatus.PARTIAL_CONTENT);
+
+      expect(response.headers['content-range']).toBe(
+        `bytes 0-${fileSize - 1}/${fileSize}`,
+      );
+      expect(response.headers['accept-ranges']).toBe('bytes');
+      expect(response.headers['content-length']).toBe(String(fileSize));
+      expect(response.headers['content-type']).toBe('video/mp4');
+    });
+
+    it('returns 404 if the video is not found', async () => {
+      await request(app.getHttpServer())
+        .get('/stream/45705b56-a47f-4869-b736-8f6626c940f8')
+        .expect(HttpStatus.NOT_FOUND);
     });
   });
 });
