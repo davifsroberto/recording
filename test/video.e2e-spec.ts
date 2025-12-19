@@ -53,6 +53,7 @@ describe('VideoController (e2e)', () => {
         .attach('thumbnail', './test/fixtures/sample.jpg')
         .field('title', video.title)
         .field('description', video.description)
+      
         .expect(HttpStatus.CREATED)
         .expect((response) => {
           expect(response.body).toMatchObject({
@@ -65,6 +66,7 @@ describe('VideoController (e2e)', () => {
           });
         });
     });
+
     it('throws an error when the thumbnail is not provided', async () => {
       const video = {
         title: 'Test Video',
@@ -80,6 +82,7 @@ describe('VideoController (e2e)', () => {
         .attach('video', './test/fixtures/sample.mp4')
         .field('title', video.title)
         .field('description', video.description)
+       
         .expect(HttpStatus.BAD_REQUEST)
         .expect((response) => {
           expect(response.body).toMatchObject({
@@ -105,6 +108,7 @@ describe('VideoController (e2e)', () => {
         .attach('thumbnail', './test/fixtures/sample.jpg')
         .field('title', video.title)
         .field('description', video.description)
+        
         .expect(HttpStatus.BAD_REQUEST)
         .expect({
           message:
