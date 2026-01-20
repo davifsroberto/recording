@@ -14,14 +14,17 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { AppService } from './app.service';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+
 import { randomUUID } from 'crypto';
-import path, { extname } from 'path';
-import { PrismaService } from '@src/prisma.service';
-import fs from 'fs';
 import type { Request, Response } from 'express';
+import fs from 'fs';
+import { diskStorage } from 'multer';
+import path, { extname } from 'path';
+
+import { PrismaService } from '@src/prisma.service';
+
+import { AppService } from './app.service';
 @Controller()
 export class AppController {
   constructor(
